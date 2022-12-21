@@ -67,13 +67,13 @@ function createGenres(callback) {
 function createGames(callback) {
     async.parallel([
         function(callback) {
-            gameCreate("Destiny 2", 60, 2, false, [genres[0]], callback);
+            gameCreate("Destiny 2", 60, 2, false, genres[0], callback);
         },
         function(callback) {
-            gameCreate("Apex Legends", 20, 5, false, [genres[1]], callback);
+            gameCreate("Apex Legends", 20, 5, false, genres[1], callback);
         },
         function(callback) {
-            gameCreate("God of War", 50, 5, false, [genres[2]], callback);
+            gameCreate("God of War", 50, 5, false, genres[2], callback);
         },
     ]);
 }
