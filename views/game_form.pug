@@ -18,7 +18,7 @@ block content
       textarea#price.form-control(type='text', placeholder='Price' name='price' required='true') #{undefined===game ? '' : game.price}
     div.form-group
       label(for='genre') Genre:
-      textarea#genre.form-control(type='text', placeholder='Genre' name='genre') #{undefined===game ? '' : game.genre.name}
+      textarea#genre.form-control(type='text', placeholder='Genre' name='genre') #{undefined===game ? '' : game.genre}
     button.btn.btn-primary(type='submit') Submit
 
   if errors

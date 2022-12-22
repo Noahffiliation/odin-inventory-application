@@ -4,7 +4,8 @@ block content
     h1 Title: #{game.name}
 
     p #[strong Description:] #{game.description}
-    p #[strong Genre:] #{game.genre.name}
+    if game.genre
+        p #[strong Genre:] #{game.genre}
     p #[strong Price:] $#{game.price}
     p #[strong In inventory:] #{game.stock}
 
