@@ -94,7 +94,7 @@ exports.game_create_post = [
             price: req.body.price,
             stock: req.body.stock,
             description: req.body.description,
-            genre: req.body.genre,
+            genre: req.body.genre.name,
         });
 
         if (!errors.isEmpty()) {
@@ -126,7 +126,34 @@ exports.game_create_post = [
 ];
 
 exports.game_delete_get = (req, res, next) => {
-    res.send("NOT IMPLEMENTED: Game delete GET");
+    async.parallel({
+        game(callback) {
+            Game.findById(req.params.id).exec(callback);
+        },
+    },
+    (err, results) => {
+        if (err) {
+            return next(err);
+        }
+        if (results.game == null) {
+            const err = new Error("Game not found");
+            err.status = 404;
+            return next(err);
+        }
+        Game.findByIdAndDelete(results.game.id, {}, (err, result) => {
+            if (err) {
+                return next(err);
+            }
+            Game.find({}, "name")
+                .sort({ name: 1})
+                .exec(function(err, list_games) {
+                    if (err) {
+                        return next(err);
+                    }
+                    res.render("game_list", { title: "Game List", game_list: list_games });
+                });
+        });
+    });
 };
 
 exports.game_delete_post = (req, res, next) => {
@@ -174,42 +201,40 @@ exports.game_update_post = [
     body("genre.*").escape(),
   
     (req, res, next) => {
-      const errors = validationResult(req);
+        const errors = validationResult(req);
   
-      const game = new Game({
-        name: req.body.name,
-        price: req.body.price,
-        stock: req.body.stock,
-        description: req.body.description,
-        genre: req.body.genre,
-    });
+        const game = {
+            name: req.body.name,
+            price: req.body.price,
+            stock: req.body.stock,
+            description: req.body.description,
+            genre: req.body.genre.name,
+        };
   
-      if (!errors.isEmpty()) {
-        async.parallel(
-          {
-            genres(callback) {
-              Genre.find(callback);
+        if (!errors.isEmpty()) {
+            async.parallel({
+                genres(callback) {
+                    Genre.find(callback);
+                },
             },
-          },
-          (err, results) => {
-            if (err) {
-              return next(err);
-            }
-            res.render("game_form", {
-              title: "Update Game",
-              game,
-              errors: errors.array(),
+            (err, results) => {
+                if (err) {
+                    return next(err);
+                }
+                res.render("game_form", {
+                    title: "Update Game",
+                    game,
+                    errors: errors.array(),
+                });
             });
-          }
-        );
-        return;
-      }
-  
-      game.findByIdAndUpdate(req.params.id, game, {}, (err, thegame) => {
-        if (err) {
-          return next(err);
+            return;
         }
-        res.redirect(thegame.url);
-      });
+  
+        Game.findByIdAndUpdate(req.params.id, game, {}, (err, thegame) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect(thegame.url);
+        });
     },
-  ];
+];
