@@ -1,6 +1,7 @@
 const Genre = require('../models/genre');
 const Game = require('../models/game');
 const async = require('async')
+const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 
 exports.genre_list = (req, res, next) => {
@@ -152,7 +153,7 @@ exports.genre_update_post = [
         .trim()
         .isLength({ min: 1 })
         .escape(),
-    
+
     (req, res, next) => {
         const errors = validationResult(req);
 

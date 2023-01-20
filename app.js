@@ -2,7 +2,10 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 var logger = require('morgan');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require("dotenv").config();
 
 var indexRouter = require('./routes/index');
@@ -24,6 +27,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(helmet());
+app.use(csrf({ cookie: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

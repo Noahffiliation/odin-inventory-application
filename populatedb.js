@@ -36,6 +36,7 @@ function gameCreate(name, price, stock, description, genre, callback) {
 
 function genreCreate(name, description, callback) {
     genredetail = { name:name };
+    // file deepcode ignore IncompatibleTypesInComparison: <please specify a reason of ignoring this>
     if (description != false) genredetail.description = description;
 
     var genre = new Genre(genredetail);
